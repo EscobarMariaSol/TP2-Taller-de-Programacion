@@ -5,18 +5,18 @@
 #include <string>
 #include <list>
 
-class Nodo {
+class Node {
 
 private:
     std::string name;
-    std::list<Nodo> neighbors;
+    std::list<Node> neighbors;
 
 public:
-    Nodo(const std::string name);
-    ~Nodo();
+    Node(const std::string name);
+    ~Node();
     std::string getName() const;
-    std::list<Nodo> getNeighbors() const;
-    int addNeighbour(Nodo& neighbour);
+    std::list<Node> getNeighbors() const;
+    int addNeighbour(Node& neighbour);
 };
 
 #endif //NODO_H

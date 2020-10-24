@@ -34,3 +34,5 @@
 
 # Others
 *.vscode
+*tp
+*tp-tsan
