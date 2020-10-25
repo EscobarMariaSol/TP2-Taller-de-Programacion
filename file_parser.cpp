@@ -17,34 +17,21 @@ std::list<std::string> split(const std::string line, const char sep) {
     return new_list;
 }
 
-int tagInsert(std::list<std::string>& my_list, 
-            std::map<std::string, std::string>& mapped) {
+int tagInsert(std::list<std::string>& my_list, LineMap& mapped) {
     my_list.front().pop_back();
-    mapped.insert(std::pair<std::string, std::string>(
-                "Etiqueta", 
-                std::move(my_list.front()))
-    );
+    mapped.add("TAG", std::move(my_list.front()));
     return 0;
 }
 
-int instructionInsert(std::list<std::string>& my_list, 
-            std::map<std::string, std::string>& mapped) {
-    mapped.insert(
-                std::pair<std::string, std::string>("Instrucción", 
-                std::move(my_list.front()))
-    );
+int instructionInsert(std::list<std::string>& my_list, LineMap& mapped) {
+    mapped.add("INST", std::move(my_list.front()));
     return 0;
 }
 
-int paramInsert(std::list<std::string>& my_list, 
-            std::map<std::string, std::string>& mapped,
-            int pos) {
+int paramInsert(std::list<std::string>& my_list, LineMap& mapped, int pos) {
     if (my_list.front().back() == ',') my_list.front().pop_back();
-    std::string param = "Parámetro" + std::to_string(pos);
-    mapped.insert(
-                std::pair<std::string, std::string>(param, 
-                std::move(my_list.front()))
-    );
+    std::string param = "PARAM" + std::to_string(pos);
+    mapped.add(param, std::move(my_list.front()));
     return 0;
 }
 
@@ -58,10 +45,10 @@ FileParser::~FileParser() {
     file.close();
 }
 
-std::map<std::string, std::string> FileParser::parseLine() {
+LineMap FileParser::parseLine() {
     std::string line;
     std::list<std::string> my_list;
-    std::map<std::string, std::string> mapped;
+    LineMap mapped;
     getline(file, line);
     int pos = 0;
     my_list = split(line, ' ');

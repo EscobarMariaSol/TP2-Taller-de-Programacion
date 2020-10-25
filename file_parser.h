@@ -7,6 +7,8 @@
 #include <list>
 #include <map>
 
+#include "line_map.h"
+
 
 class FileParser {
 
@@ -16,7 +18,7 @@ private:
 public:
     FileParser(const std::string file_name);
     ~FileParser();
-    std::map<std::string, std::string> parseLine();
+    LineMap parseLine();
 };
 
 #endif //FILE_PARSER_H

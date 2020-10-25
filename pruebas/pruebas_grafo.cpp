@@ -3,12 +3,14 @@
 int main(int argc, char *argv[]){
     
     std::cout << "~~~~~~~~~~~~~~~~~~~~~Pruebas Grafo~~~~~~~~~~~~~~~~~~~~~~~\n";
+
     std::cout << "~~~~~~~~~~~~~~~~~~~~Crear un Grafo~~~~~~~~~~~~~~~~~~~~~~~\n";
     Graph grafo = Graph();
     std::string resp = (grafo.getSize() == 0) ? "Ok\n" : "Falló\n";
     std::cout << "Grafo recién creado tiene tamaño 0: " << resp;
     resp = (grafo.getNodes().empty()) ? "Ok\n" : "Falló\n";
     std::cout << "Grafo recién creado no tiene nodos: " << resp;
+
     std::cout << "~~~~~~~~~~~~~~~~~~~~~Agregar Nodos~~~~~~~~~~~~~~~~~~~~~~~\n";
     Node nodo1 = Node("1");
     Node nodo2 = Node("2");
@@ -22,6 +24,12 @@ int main(int argc, char *argv[]){
     grafo.addNode(nodo3);
     resp = (grafo.getNodes().size() == 3) ? "Ok\n" : "Falló\n";
     std::cout << "Luego de agregar otro nodo el tamaño es 3: " << resp;
-    
+
+    std::cout << "~~~~~~~Agregar Nodos agrega los nodos correctos~~~~~~~~~~\n";
+    std::set<Node> nodos = grafo.getNodes();
+    for (std::set<Node>::iterator it=nodos.begin(); 
+        it != nodos.end(); ++it) {
+        std::cout << "Nombre Nodo: " << it->getId() << "\n";
+    }
     return 0;
 }
