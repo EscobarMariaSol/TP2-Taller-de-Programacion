@@ -1,49 +1,58 @@
 #include "line_map.h"
 
-/**************** Métodos Públicos de GraphGenerator *************************/
-
-LineMap::LineMap() {
-}
-
-LineMap::~LineMap() {
-}
+/**************** Métodos Privados de GraphGenerator *************************/
 
 bool LineMap::isATag(std::string tag) const {
-    if ((tag.find('#') == std::string::npos) || 
-        (tag.find('[') == std::string::npos)) {
+    if ((tag.find('#') != std::string::npos) || 
+        (tag.find('[') != std::string::npos)) {
             return false;
     }
     return true;
 }
 
+/**************** Métodos Públicos de GraphGenerator *************************/
+LineMap::LineMap(): line_map(std::map<std::string, std::string>()) {
+}
+
+LineMap::~LineMap() {
+}
+
+
 bool LineMap::isAJump() const {
-    std::string inst[] = {"jmp", "ja", "jeq", "jne", 
-                            "jlt", "jle", "jgt", "jge", "jset"};
-    std::string instuction = this->line_map.find("INST")->second;
-    return (inst->find(instuction) != std::string::npos);
+    if (!this->line_map.empty())
+        return (this->line_map.find("INST")->second.front() == 'j');
+    return false;
 }
 
 bool LineMap::isARet() const {
-    std::string instuction = this->line_map.find("INST")->second;
-    return (instuction.compare("ret") == 0);
+    if (!this->line_map.empty()) {
+        std::string instuction = this->line_map.find("INST")->second;
+        return (instuction.compare("ret") == 0);
+    }
+    return false;
 }
 
 std::string LineMap::getTagId() {
-    if (this->line_map.find("TAG") != this->line_map.end()) {
-        return this->line_map.find("TAG")->second;
+    if (!this->line_map.empty()) {
+        if (this->line_map.find("TAG") != this->line_map.end())
+            return this->line_map.find("TAG")->second;
     }
     return "";
 }
 
-std::set<std::string> LineMap::getNeighbors() {
-    std::set<std::string> nghbrs;
+std::list<std::string> LineMap::getNeighbors() {
+    std::list<std::string> nghbrs;
     if (this->isAJump()) {
         if (isATag(this->line_map.find("PARAM1")->second)) {
-           nghbrs.insert(this->line_map.find("PARAM1")->second); 
-        } if (isATag(this->line_map.find("PARAM2")->second)) {
-           nghbrs.insert(this->line_map.find("PARAM2")->second); 
-        } if (isATag(this->line_map.find("PARAM3")->second)) {
-           nghbrs.insert(this->line_map.find("PARAM3")->second); 
+            nghbrs.push_back(this->line_map.find("PARAM1")->second); 
+        } if (this->line_map.find("PARAM2") != this->line_map.end()) {
+            if (isATag(this->line_map.find("PARAM2")->second)) {
+                nghbrs.push_back(this->line_map.find("PARAM2")->second); 
+            }
+        } if (this->line_map.find("PARAM3") != this->line_map.end()) {
+            if (isATag(this->line_map.find("PARAM3")->second)) {
+                nghbrs.push_back(this->line_map.find("PARAM3")->second); 
+            }
         } 
     }
     return nghbrs;
@@ -57,4 +66,14 @@ int LineMap::add(std::string key, std::string value) {
 
 bool LineMap::isEmpty() const {
     return this->line_map.empty();
+}
+
+bool LineMap::canGoToTheNexLine() const{
+    if (this->isARet()) return false;
+    if (this->isAJump()) {
+        if (this->line_map.find("PARAM3") != this->line_map.end())
+            return false;
+    }
+    return true;
+
 }

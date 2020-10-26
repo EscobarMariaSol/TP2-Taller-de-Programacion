@@ -49,20 +49,23 @@ LineMap FileParser::parseLine() {
     std::string line;
     std::list<std::string> my_list;
     LineMap mapped;
-    getline(file, line);
+    std::getline(file, line);
     int pos = 0;
     my_list = split(line, ' ');
     while (!my_list.empty()) {
         if (my_list.front().back() == ':') {
-            tagInsert(my_list, mapped); // validar error
+            tagInsert(my_list, mapped);
         } else {
-            if (pos == 0) 
-                instructionInsert(my_list, mapped); //validar error
+            if (pos == 0) instructionInsert(my_list, mapped);
             else
-                paramInsert(my_list, mapped, pos); //validar error
+                paramInsert(my_list, mapped, pos);
             pos++;
         }
         my_list.pop_front();
     }
     return mapped;
+}
+
+bool FileParser::hasLine() const {
+    return !this->file.eof();
 }

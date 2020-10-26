@@ -19,6 +19,7 @@ public:
     FileParser(const std::string file_name);
     ~FileParser();
     LineMap parseLine();
+    bool hasLine() const;
 };
 
 #endif //FILE_PARSER_H

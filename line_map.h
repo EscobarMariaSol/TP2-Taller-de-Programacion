@@ -1,25 +1,27 @@
 #ifndef LINE_MAP_H
 #define LINE_MAP_H
 
+#include <iostream>
 #include <map>
 #include <string>
-#include <set>
+#include <list>
 
 class LineMap {
 
 private:
     std::map<std::string, std::string> line_map;
+    bool isARet() const;
 
 public:
     LineMap();
     ~LineMap();
     bool isATag(std::string tag) const;
     bool isAJump() const;
-    bool isARet() const;
     std::string getTagId();
-    std::set<std::string> getNeighbors();
+    std::list<std::string> getNeighbors();
     int add(std::string key, std::string value);
     bool isEmpty() const;
+    bool canGoToTheNexLine() const;
 
 };
 

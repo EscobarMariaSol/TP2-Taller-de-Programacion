@@ -12,8 +12,8 @@ int main(int argc, char *argv[]){
     Node nodo3 = Node("3");
     nodo1.addNeighbour(nodo2);
     nodo1.addNeighbour(nodo3);
-    std::set<Node> vecinos = nodo1.getNeighbors();
-    for (std::set<Node>::iterator it=vecinos.begin(); 
+    std::list<Node> vecinos = nodo1.getNeighbors();
+    for (std::list<Node>::iterator it=vecinos.begin(); 
         it != vecinos.end(); ++it) {
         std::cout << "Nombre vecino: " << it->getId() << "\n";
     }

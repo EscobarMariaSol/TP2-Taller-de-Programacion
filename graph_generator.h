@@ -9,6 +9,8 @@ class GraphGenerator {
 
 private:
     FileParser parser;
+    void addNodes(Graph& new_graph, std::map<Node, std::list<std::string>>& edges);
+    void addEdges(Graph& new_graph, std::map<Node, std::list<std::string>>& edges);
 
 public:
     GraphGenerator(const std::string path);

@@ -8,15 +8,15 @@
 class Graph {
 
 private:
-    std::set<Node> nodes;
+    std::list<Node> nodes;
     
 public:
     Graph();
     ~Graph();
     int getSize() const;
-    std::set<Node> getNodes() const;
+    std::list<Node> getNodes() const;
     int addNode(Node& node);
-    Node getNode(const std::string id);
+    Node& getNode(const std::string id);
     bool containsNode(const std::string id);
 };
 
