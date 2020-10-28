@@ -10,7 +10,7 @@ class Dfs {
 private:
     bool cycle;
     bool unusedInstructions;
-    int visit(Graph& graph, Node& actual, std::list<Node>& visited);
+    int visit(Graph& graph, Node& actual, std::set<Node>& visited);
 
 
 public:

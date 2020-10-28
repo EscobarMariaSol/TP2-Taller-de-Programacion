@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
     std::cout << "\n~~~~~~~~~~~~~Pruebas Dfs con Grafo vacío~~~~~~~~~~~~~~~\n";
     correr_dfs("pruebas/prueba3.txt");
 
-    std::cout << "\n~~~~~~~~~~~~~Pruebas Dfs Grafo con ciclo~~~~~~~~~~~~~~~\n";
+    std::cout << "\n~~~~~~~~~~~~~Pruebas Dfs Grafo Correcto~~~~~~~~~~~~~~~~\n";
     correr_dfs("pruebas/prueba4.txt");
         
     return 0;
