@@ -26,8 +26,8 @@ int main(int argc, char *argv[]){
     std::cout << "Luego de agregar otro nodo el tamaño es 3: " << resp;
 
     std::cout << "~~~~~~~Agregar Nodos agrega los nodos correctos~~~~~~~~~~\n";
-    std::list<Node> nodos = grafo.getNodes();
-    for (std::list<Node>::iterator it=nodos.begin(); 
+    std::set<Node> nodos = grafo.getNodes();
+    for (std::set<Node>::iterator it=nodos.begin(); 
         it != nodos.end(); ++it) {
         std::cout << "Nombre Nodo: " << it->getId() << "\n";
     }

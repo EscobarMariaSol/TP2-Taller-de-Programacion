@@ -8,8 +8,8 @@ void crear_generador(std::string path) {
     std::cout << "El generador de grafos fue creado: " << resp;
 
     std::cout << "~~~~~~~~~~~~~~~Generar un nuevo grafo~~~~~~~~~~~~~~~~~~~~\n";
-    Graph new_graph = new_gg.generateGraph();
-    resp = ((&new_graph) != NULL) ? "Ok\n" : "Falló\n";
+    Graph new_graph;
+    resp = (new_gg.generateGraph(new_graph) == 0) ? "Ok\n" : "Falló\n";
     std::cout << "El nuevo grafo fue generado: " << resp;
 
     std::cout << "~~~~~~~~~~~~~Los nodos guardados coinciden~~~~~~~~~~~~~~~\n";
@@ -23,10 +23,10 @@ void crear_generador(std::string path) {
     for (std::list<Node>::iterator it1=nodos.begin(); 
         it1 != nodos.end(); ++it1) {
         std::cout << "Nombre Nodo: " << it1->getId() << "\n";
-        std::list<Node> vecinos = it1->getNeighbors();
+        std::set<Node> vecinos = it1->getNeighbors();
         std::cout << "Vecinos: " << vecinos.size() << "\n";
         if (!vecinos.empty()) {
-            for (std::list<Node>::iterator it2=vecinos.begin(); 
+            for (std::set<Node>::iterator it2=vecinos.begin(); 
                 it2 != vecinos.end(); ++it2) {
                 std::cout << "      Nombre de vecino: " << it2->getId() << "\n";
             }

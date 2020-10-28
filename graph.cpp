@@ -11,13 +11,13 @@ std::list<Node>::iterator findNode(std::list<Node>& nodos, const std::string id)
 }
 /*********************** Métodos Públicos de Graph ****************************/
 
-Graph::Graph(): nodes(std::list<Node>()) {
+Graph::Graph(): nodes() {
 }
 
 Graph::~Graph() {
 }
 
-int Graph::getSize() const {
+size_t Graph::getSize() const {
     return this->nodes.size();
 }
 
@@ -36,4 +36,8 @@ Node& Graph::getNode(const std::string id) {
 
 bool Graph::containsNode(const std::string id) {
     return (findNode(this->nodes, id) != this->nodes.end());
+}
+
+Node& Graph::getFirst() {
+    return this->nodes.front();
 }

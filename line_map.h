@@ -4,7 +4,7 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include <list>
+#include <set>
 
 class LineMap {
 
@@ -18,7 +18,7 @@ public:
     bool isATag(std::string tag) const;
     bool isAJump() const;
     std::string getTagId();
-    std::list<std::string> getNeighbors();
+    std::set<std::string> getNeighbors();
     int add(std::string key, std::string value);
     bool isEmpty() const;
     bool canGoToTheNexLine() const;

@@ -5,9 +5,7 @@
 
 /*********************** Métodos Públicos de Node ****************************/
 
-Node::Node(const std::string id):
-                                id(id), 
-                                neighbors(std::list<Node>()) {
+Node::Node(const std::string id): id(id), neighbors() {
 }
 
 Node::~Node(){
@@ -17,12 +15,13 @@ std::string Node::getId() const {
     return this->id;
 }
 
-std::list<Node> Node::getNeighbors() const {
+std::set<Node> Node::getNeighbors(){
     return this->neighbors;
 }
 
-void Node::addNeighbour(Node& neighbour) {
-    this->neighbors.push_back(neighbour);
+int Node::addNeighbour(Node& neighbour) {
+    this->neighbors.insert(neighbour);
+    return 0;
 
 }
 

@@ -9,13 +9,13 @@ class GraphGenerator {
 
 private:
     FileParser parser;
-    void addNodes(Graph& new_graph, std::map<Node, std::list<std::string>>& edges);
-    void addEdges(Graph& new_graph, std::map<Node, std::list<std::string>>& edges);
+    int addNodes(Graph& new_graph, std::map<Node, std::set<std::string>>& edges);
+    int addEdges(Graph& new_graph, std::map<Node, std::set<std::string>>& edges);
 
 public:
     GraphGenerator(const std::string path);
     ~GraphGenerator();
-    Graph generateGraph();
+    int generateGraph(Graph& new_graph);
 };
 
 #endif //GRAPH_GENERATOR_H

@@ -2,7 +2,7 @@
 #define GRAFO_H
 
 #include "node.h"
-#include <set>
+#include <list>
 
 
 class Graph {
@@ -13,11 +13,12 @@ private:
 public:
     Graph();
     ~Graph();
-    int getSize() const;
+    size_t getSize() const;
     std::list<Node> getNodes() const;
     int addNode(Node& node);
     Node& getNode(const std::string id);
     bool containsNode(const std::string id);
+    Node& getFirst();
 };
 
 #endif //GRAFO_H

@@ -3,20 +3,20 @@
 
 #include <iostream>
 #include <string>
-#include <list>
+#include <set>
 
 class Node {
 
 private:
     std::string id;
-    std::list<Node> neighbors;
+    std::set<Node> neighbors;
 
 public:
     Node(const std::string id);
     ~Node();
     std::string getId() const;
-    std::list<Node> getNeighbors() const;
-    void addNeighbour(Node& neighbour);
+    std::set<Node> getNeighbors();
+    int addNeighbour(Node& neighbour);
     bool operator<(const Node& other) const;
     bool operator==(const Node& other) const;
 };
