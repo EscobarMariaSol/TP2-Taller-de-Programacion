@@ -2,7 +2,7 @@
 
 /******************** Funciones Auxiliares de FileParser *********************/
 
-std::list<std::string> split(const std::string line, const char sep) {
+static std::list<std::string> split(const std::string line, const char sep) {
     std::list<std::string>  new_list;
     std::string str("");
     for (size_t i = 0; i < line.size(); i++) {
@@ -17,21 +17,34 @@ std::list<std::string> split(const std::string line, const char sep) {
     return new_list;
 }
 
-int tagInsert(std::list<std::string>& my_list, LineMap& mapped) {
+static int tagInsert(std::list<std::string>& my_list, LineMap& mapped) {
     my_list.front().pop_back();
-    mapped.add("TAG", std::move(my_list.front()));
+    if (mapped.add("TAG", std::move(my_list.front())) < 0) return -1;
     return 0;
 }
 
-int instructionInsert(std::list<std::string>& my_list, LineMap& mapped) {
-    mapped.add("INST", std::move(my_list.front()));
+static int instructionInsert(std::list<std::string>& my_list, LineMap& mapped) {
+    if (mapped.add("INST", std::move(my_list.front())) < 0) return -1;
     return 0;
 }
 
-int paramInsert(std::list<std::string>& my_list, LineMap& mapped, int pos) {
+static int paramInsert(std::list<std::string>& my_list, LineMap& mapped, int pos) {
     if (my_list.front().back() == ',') my_list.front().pop_back();
     std::string param = "PARAM" + std::to_string(pos);
-    mapped.add(param, std::move(my_list.front()));
+    if (mapped.add(param, std::move(my_list.front())) < 0) return -1;
+    return 0;
+}
+
+static int insertElement(LineMap& mapped, 
+    std::list<std::string>& my_list, int& pos) {
+    if (my_list.front().back() == ':')
+            return tagInsert(my_list, mapped);
+    if (pos == 0) {
+        if (instructionInsert(my_list, mapped) < 0) return -1;
+    } else {
+        if (paramInsert(my_list, mapped, pos) < 0) return -1;
+    }
+    pos++;
     return 0;
 }
 
@@ -53,13 +66,9 @@ LineMap FileParser::parseLine() {
     int pos = 0;
     my_list = split(line, ' ');
     while (!my_list.empty()) {
-        if (my_list.front().back() == ':') {
-            tagInsert(my_list, mapped);
-        } else {
-            if (pos == 0) instructionInsert(my_list, mapped);
-            else
-                paramInsert(my_list, mapped, pos);
-            pos++;
+        if (insertElement(mapped, my_list, pos) < 0) {
+            mapped.invalidate();
+            break;
         }
         my_list.pop_front();
     }

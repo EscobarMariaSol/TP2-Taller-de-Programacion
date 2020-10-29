@@ -2,7 +2,8 @@
 
 /*********************** Funciones Auxiliares de Graph ************************/
 
-std::list<Node>::iterator findNode(std::list<Node>& nodos, const std::string id) {
+static std::list<Node>::iterator findNode(
+    std::list<Node>& nodos, const std::string id) {
     for (std::list<Node>::iterator it = nodos.begin(); 
                 it != nodos.end(); ++it) {
         if (it->getId().compare(id) == 0) return it;       

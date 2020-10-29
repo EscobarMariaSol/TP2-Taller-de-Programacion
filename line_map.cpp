@@ -1,6 +1,6 @@
 #include "line_map.h"
 
-/**************** Métodos Privados de GraphGenerator *************************/
+/**************** Métodos Privados de LineMap *************************/
 
 bool LineMap::isATag(std::string tag) const {
     if ((tag.find('#') != std::string::npos) || 
@@ -10,8 +10,8 @@ bool LineMap::isATag(std::string tag) const {
     return true;
 }
 
-/**************** Métodos Públicos de GraphGenerator *************************/
-LineMap::LineMap(): line_map(std::map<std::string, std::string>()) {
+/**************** Métodos Públicos de LineMap *************************/
+LineMap::LineMap(): line_map(), status(0) {
 }
 
 LineMap::~LineMap() {
@@ -46,21 +46,20 @@ std::set<std::string> LineMap::getNeighbors() {
         if (isATag(this->line_map.find("PARAM1")->second)) {
             nghbrs.insert(this->line_map.find("PARAM1")->second); 
         } if (this->line_map.find("PARAM2") != this->line_map.end()) {
-            if (isATag(this->line_map.find("PARAM2")->second)) {
+            if (isATag(this->line_map.find("PARAM2")->second))
                 nghbrs.insert(this->line_map.find("PARAM2")->second); 
-            }
         } if (this->line_map.find("PARAM3") != this->line_map.end()) {
-            if (isATag(this->line_map.find("PARAM3")->second)) {
+            if (isATag(this->line_map.find("PARAM3")->second))
                 nghbrs.insert(this->line_map.find("PARAM3")->second); 
-            }
         } 
     }
     return nghbrs;
 }
 
 int LineMap::add(std::string key, std::string value) {
-    this->line_map.insert(
-        std::pair<std::string, std::string>(key, value));
+    if (this->line_map.insert(
+        std::pair<std::string, std::string>(key, value)).second == false)
+        return -1;
     return 0;
 }
 
@@ -77,4 +76,13 @@ bool LineMap::canGoToTheNexLine() const{
     }
     return true;
 
+}
+
+void LineMap::invalidate() {
+    this->status = -1;
+    this->line_map.clear();
+}
+
+bool LineMap::isValid() const {
+    return (this->status == 0);
 }

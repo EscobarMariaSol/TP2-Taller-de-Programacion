@@ -10,6 +10,7 @@ class LineMap {
 
 private:
     std::map<std::string, std::string> line_map;
+    int status;
     bool isARet() const;
 
 public:
@@ -22,6 +23,8 @@ public:
     int add(std::string key, std::string value);
     bool isEmpty() const;
     bool canGoToTheNexLine() const;
+    void invalidate();
+    bool isValid() const;
 
 };
 

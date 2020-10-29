@@ -1,7 +1,5 @@
 #include "node.h"
 
-/*********************** Funciones Auxiliares de Node ************************/
-
 
 /*********************** Métodos Públicos de Node ****************************/
 
@@ -20,9 +18,11 @@ std::set<Node> Node::getNeighbors(){
 }
 
 int Node::addNeighbour(Node& neighbour) {
-    this->neighbors.insert(neighbour);
+    if ((this->neighbors.insert(neighbour).second == false) &&
+        (this->neighbors.find(neighbour) == this->neighbors.end())) {
+        return -1;
+    }
     return 0;
-
 }
 
 bool Node::operator==(const Node& other) const {
