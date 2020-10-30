@@ -22,8 +22,12 @@ int Checker::verifyFile(const std::string path) {
     Graph graph;
     GraphGenerator generator(path);
     Dfs dfs;
-    if ((generator.generateGraph(graph) < 0) || (dfs.walkGraph(graph) < 0))
+    if (generator.generateGraph(graph) < 0) {
         return -1;
+    } 
+    if (dfs.walkGraph(graph) < 0) {
+        return -1;
+    }
     setResult(dfs);
     return 0;
 }
