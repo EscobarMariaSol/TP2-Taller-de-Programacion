@@ -4,19 +4,20 @@
 #include "file_repository.h"
 #include "checker.h"
 #include "output_repository.h"
+#include <vector>
 
 class CheckerProgram {
 
 private:
     FileRepository file_repo;
     OutputRepository output_repo;
-    void saveFiles(const char *files[]);
+    void saveFiles(std::vector<std::string>& files);
     int verifyFiles();
 
 public:
     CheckerProgram();
     ~CheckerProgram();
-    int start(const char *files[]);
+    int start(std::vector<std::string>& files);
 };
 
 #endif // CHECKER_PROGRAM_H
