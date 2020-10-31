@@ -4,18 +4,21 @@
 #include "graph.h"
 #include "graph_generator.h"
 #include "dfs.h"
+#include "checker_thread.h"
 
-class Checker {
+class Checker: public CheckerThread {
 
 private:
     std::string result;
+    FileRepository& file_repo;
+    OutputRepository& output_repo;
     void setResult(Dfs& dfs);
+    std::string createOutput(std::string& path);
     
 public:
-    Checker();
+    Checker(FileRepository& file_repo, OutputRepository& output_repo);
     ~Checker();
-    int verifyFile(const std::string path);
-    std::string getResult() const;
+    void verifyFile();
 };
 
 #endif // CHECKER_H

@@ -5,6 +5,7 @@
 #include "checker.h"
 #include "output_repository.h"
 #include <vector>
+#include <thread>
 
 class CheckerProgram {
 
@@ -12,12 +13,11 @@ private:
     FileRepository file_repo;
     OutputRepository output_repo;
     void saveFiles(std::vector<std::string>& files);
-    int verifyFiles();
 
 public:
     CheckerProgram();
     ~CheckerProgram();
-    int start(std::vector<std::string>& files);
+    int start(int threads_num, std::vector<std::string>& files);
 };
 
 #endif // CHECKER_PROGRAM_H

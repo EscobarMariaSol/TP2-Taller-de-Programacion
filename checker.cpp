@@ -10,28 +10,33 @@ void Checker::setResult(Dfs& dfs) {
         this->result = "GOOD";
 }
 
+std::string Checker::createOutput(std::string& path) {
+    std::string output;
+    size_t index = path.find_last_of('/') + 1;
+    if (index != std::string::npos) 
+        output += (path.substr(index) + " " + this->result + "\n");
+    else 
+        output += (path + this->result + "\n");
+    return output;
+}
 /*********************** Métodos Públicos de Checker *************************/
 
-Checker ::Checker(): result() {
+Checker ::Checker(FileRepository& file_repo, OutputRepository& output_repo) : 
+    file_repo(file_repo), output_repo(output_repo) {
 }
 
 Checker ::~Checker() {
 }
 
-int Checker::verifyFile(const std::string path) {
+void Checker::verifyFile() {
     Graph graph;
+    std::string output;
+    std::string path = this->file_repo.getFile();
     GraphGenerator generator(path);
     Dfs dfs;
-    if (generator.generateGraph(graph) < 0) {
-        return -1;
-    } 
-    if (dfs.walkGraph(graph) < 0) {
-        return -1;
-    }
+    if ((generator.generateGraph(graph) < 0) || (dfs.walkGraph(graph) < 0)) 
+        return;
     setResult(dfs);
-    return 0;
-}
-
-std::string Checker::getResult() const {
-    return this->result;
+    output = createOutput(path);
+    if (output.empty() || (this->output_repo.addOutput(output) < 0)) return;
 }
