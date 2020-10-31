@@ -23,6 +23,10 @@ std::string FileRepository::getFile() {
     return aux;
 }
 
+bool FileRepository::isEmpty() const {
+    return (this->files.empty());
+}
+
 FileRepository::FileRepository(const FileRepository& other) {
     this->files = std::ref(other.files);
 }

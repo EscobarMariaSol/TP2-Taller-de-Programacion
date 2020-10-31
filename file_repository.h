@@ -18,6 +18,7 @@ public:
     ~FileRepository();
     void addFile(const std::string& file_path);
     std::string getFile();
+    bool isEmpty() const;
     FileRepository(const FileRepository&);
     FileRepository& operator=(const FileRepository&);
 

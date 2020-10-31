@@ -14,9 +14,9 @@ std::string Checker::createOutput(std::string& path) {
     std::string output;
     size_t index = path.find_last_of('/') + 1;
     if (index != std::string::npos) 
-        output += (path.substr(index) + " " + this->result + "\n");
+        output += (path.substr(index) + " " + this->result);
     else 
-        output += (path + this->result + "\n");
+        output += (path + " " + this->result);
     return output;
 }
 /*********************** Métodos Públicos de Checker *************************/
@@ -29,14 +29,17 @@ Checker ::~Checker() {
 }
 
 void Checker::verifyFile() {
-    Graph graph;
     std::string output;
-    std::string path = this->file_repo.getFile();
-    GraphGenerator generator(path);
-    Dfs dfs;
-    if ((generator.generateGraph(graph) < 0) || (dfs.walkGraph(graph) < 0)) 
-        return;
-    setResult(dfs);
-    output = createOutput(path);
-    if (output.empty() || (this->output_repo.addOutput(output) < 0)) return;
+    std::string path;
+    while (!this->file_repo.isEmpty()) {
+        path = this->file_repo.getFile();
+        Graph graph;
+        GraphGenerator generator(path);
+        Dfs dfs;
+        if ((generator.generateGraph(graph) < 0) || (dfs.walkGraph(graph) < 0)) 
+            return;
+        setResult(dfs);
+        output = createOutput(path);
+        if (output.empty() || (this->output_repo.addOutput(output) < 0)) return;
+    }
 }

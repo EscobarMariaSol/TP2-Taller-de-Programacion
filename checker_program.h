@@ -17,7 +17,7 @@ private:
 public:
     CheckerProgram();
     ~CheckerProgram();
-    int start(int threads_num, std::vector<std::string>& files);
+    int start(const char *threads_num, std::vector<std::string>& files);
 };
 
 #endif // CHECKER_PROGRAM_H
