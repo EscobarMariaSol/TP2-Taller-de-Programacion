@@ -1,6 +1,13 @@
 #include "checker_program.h"
 
-bool isAValidNumber(const std::string& number) {
+/**************** Funciones auxiliares de CheckerProgram *********************/
+
+// Función utilizada para validar si el valor correspondiente a un número 
+// recibido desde el main, corresponde a un valor númerico
+// Pre: recibe una referencia a un string
+// Pos: devuelve verdadero si el string corresponde a un valor numérico
+// o falso en caso contrario
+static bool isAValidNumber(const std::string& number) {
     for (size_t i = 0; i < number.size(); i++)
         if (!isdigit(number[i])) return false;
     return true;

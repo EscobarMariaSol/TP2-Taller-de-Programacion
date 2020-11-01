@@ -18,7 +18,7 @@ int OutputRepository::addOutput(const std::string output) {
     
 void OutputRepository::showOutput() {
     std::lock_guard<std::mutex> lock(this->mutex);
-    for(std::set<std::string>::iterator it = this->outputs.begin();
+    for (std::set<std::string>::iterator it = this->outputs.begin();
         it != this->outputs.end(); ++it) {
             std::cout<<(*it)<<"\n";
     }

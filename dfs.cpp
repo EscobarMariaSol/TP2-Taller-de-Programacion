@@ -1,11 +1,21 @@
 #include "dfs.h"
 
-/*********************** Funciones Auxiliares de Dfs**************************/
+/*********************** Función Auxiliares de Dfs****************************/
 
+// Función que indica si un nodo ya ha sido visitado
+// Pre: recibe una referencia al set de nodos vistados y a un nodo
+// Pos: devuelve verdadero o falso según si el nodo se encuentra
+// dentro del set de nodos visitados
 static bool wasVisited(std::set<Node>& visited, const Node& actual) {
     return (visited.find(actual) != visited.end());
 }
 
+// Función que indica si un nodo puede volver hacia atrás en el recorrido
+// generando así un ciclo en el grafo
+// Pre: recibe una referencia a un grafo, los vecinos del nodo y el set
+// de nodos visitados
+// Pos: devuelve verdadero si el nodo actual puede cerrar un ciclo o
+// falso en caso contrario
 static bool canGoBack(Graph& graph, const std::set<Node>& neighbors , 
                     std::set<Node>& visited) {
     for (std::set<Node>::iterator it = neighbors.begin(); 

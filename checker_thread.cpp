@@ -1,10 +1,11 @@
 #include "checker_thread.h"
 
+/******************* Funciones Públicas de CheckerThread *********************/
+
 CheckerThread::CheckerThread() {
 }
 
 CheckerThread::~CheckerThread() {
-    
 }
 
 void CheckerThread::start(){

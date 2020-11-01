@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
     resp = (prog4.start("5", input4) == 0) ? "Ok\n" : "Falló\n";
     std::cout << "El programa se ejecutó correctamente: "<< resp;
 
-    std::cout << "\n~~~~~~~~~~ CheckerProgram parallel_bad ~~~~~~~~~~~~~~~~\n";
+    std::cout << "\n~~~~~~~~~~ CheckerProgram parallel_good ~~~~~~~~~~~~~~~\n";
     std::vector<std::string> input5;
     CheckerProgram prog5;
     input5.push_back("pruebas/parallel_good/arp.bpf");
