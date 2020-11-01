@@ -144,7 +144,7 @@ archivos, se ha debido detectar cuáles son las secciones críticas, es decir,
 cuales son las operaciones que no pueden ser interrumpidas por un context 
 switch, pudiendo provocar así alteraciones en los resultados. 
 En la clase *FileRepository*, se han detectado que la petición de rutas de 
-archivos y la consulta de si el repositorio está vacío son secciones críticas,
+archivos y la agregación de las mismas son secciones críticas, 
 pues si estas fuesen interrumpidas y se cambiara el estado del repositorio
 justo antes de obner la respuesta, esto podria generar un resultado 
 completamente inesperado, lo mismo sucede con la clase *OutputRepository*, 
@@ -166,23 +166,149 @@ el flujo del programa, de acuerdo a la resolución implementada.
 ![Flujo](https://github.com/EscobarMariaSol/TP2-Taller-de-Programacion/blob/main/img/TP2-Flujo.png)
 
 
-Por otro lado se presenta el siguiente diagrama de clases que intenta detallar,  
+Por otro lado se presenta el siguiente diagrama de clases que intenta detallar, 
 de la mejor manera posible, las clases implementadas para la resolución del 
-trabajo práctico y la relació existente entre ellas.
+trabajo práctico y la relación existente entre ellas.
 
 ![Clases](https://github.com/EscobarMariaSol/TP2-Taller-de-Programacion/blob/main/img/TP2-Clases.png)
 
 
 ## Clases implementadas
 
+A continuación se detallará un poco más acerca de las interfaces implementadas 
+para cada una de las clases creadas, explicacando brevemente el proqué de dicha 
+implementación.
+Enn caso de buscar una explicación más detallada, se puede consultar la 
+documentación existente en cada uno de los archivos de cabecera.
+
 ### CheckerProgram
+
+Esta clase es la encargada de llevar a cabo la ejecución del verificdor de 
+archivos, la cual nos permite proveer al main una completa abstracción de toda 
+lógica. La clase cuenta con los siguientes atributos:
+1. **file_repo**: que corresponde al objeto compartido, donde se almacenan las 
+rutas a los archivos a verificar.
+2. **output_repo**: corresponde al repositorio compartido, donde se almacenan
+las salidas registradas.
+
+La clase posee la siguiente interfaz:
+``` C++
+    class CheckerProgram {
+    private:
+        FileRepository file_repo;
+        OutputRepository output_repo;
+        void saveFiles(std::vector<std::string>& files);
+
+    public:
+        CheckerProgram();
+        ~CheckerProgram();
+        int start(const char *threads_num, std::vector<std::string>& files);
+    };
+``` 
+Vemos que cuenta con alguno de los siguientes métodos:
+1. **saveFiles**: es un método que se ha marcado como privado, pues sólo es 
+utilizado por la misma clase, la cual lo utiliza para guardar las rutas, a los 
+archivos a verificar, dentro del repositorio de archivos.
+2. **start**: es el método que se invoca desde el main para dar inicio a la 
+ejecución del programa.
 
 ### FileRepository
 
+Esta es una de las clases compartidas que se encarga de alamacenar las rutas 
+de los archivos a verificar. La clase cuenta con los siguientes atributos:
+1. **files**: es una cola en la que se guardan los archivos a verificar
+2. **mutex**: es el mutex que se utilizará para proteger los secciones que 
+realizan operaciones que no pueden ser interrrumpidas por un context switch. 
+
+La clase posee la siguiente interfaz:
+```C++
+    class FileRepository {
+    private:
+        std::queue<std::string> files;
+        std::mutex mutex;
+
+    public:
+        FileRepository();
+        ~FileRepository();
+        void addFile(const std::string& file_path);
+        std::string getFile();
+        FileRepository(const FileRepository&);
+        FileRepository& operator=(const FileRepository&); 
+    };
+```
+Se puede observar que cuenta con alguno de los siguientes métodos:
+1. **addFile**: este método se encarga de guardar una ruta a un archivo 
+dentro del atributo *files*, este es uno de los métodos protegidos por 
+un lock_guard del mutex.
+2. **getFile**: este método chequea si hay rutas disponibles en *files*, 
+si es así devuelve el próximo en la cola, este es otro de los métodos protegidos 
+por un lock_guard del mutex.
+
 ### OutputRepository
+
+Esta es la segunda clase compartida, es un repositorio encargado de almacenar 
+las salidas correspondientes al resultado de las verificaciones de los archivos. 
+La clase cuenta con los siguientes atributos:
+1. **outputs**: es donde se almacenan la salidas ordenadas alfabeticamente
+2. **mutex**: es el mutex que se utilizará para evitar que un thread pueda 
+interrumpir a otro, mediante un context switch, mientras interactua con las 
+secciones críticas del repositorio.
+
+La clase posee la siguiente interfaz:
+```C++
+    class OutputRepository {
+    private:
+        std::set<std::string> outputs;
+        std::mutex mutex;
+
+    public:
+        OutputRepository();
+        ~OutputRepository();
+        int addOutput(const std::string output);
+        void showOutput();
+        OutputRepository(const OutputRepository& other);
+        OutputRepository& operator=(const OutputRepository& other);
+    };
+```
+Como se puede observar cuenta con alguno de los siguientes métodos:
+1. **addOutput**: este método se encarga de guardar una nueva salida 
+al set de resultados *outputs* y es uno de los métodos protegidos por 
+un lock_guard del mutex.
+2. **showOutput**: este método es el encargado de mostrar por pantalla 
+todas las salidas almacenadas durante el proceso de verificación de los 
+archivos y es otro de los métodos protegidos por un lock_guard del mutex. 
 
 ### Checker
 
+Esta clase es la encargada de llevar a cabo al verificador de archivos,
+esto implica la creación del grafo y la verificación del mismo, para luego 
+almacenar los resultados dentro del repositorio de salidas.
+La misma hereda de la clase CheckerThread, pues cada instacia de la misma 
+corresponderá a un thread.
+La clase cuenta con los siguientes atributos:
+1. **result**: es un string correspondiente al resultado obtenido luego de 
+verificar un archivo
+2. **file_repo**: corresponde al repositorio al cual se le pediran las rutas
+de los archivos que deben ser verificados
+3. **utput_repo**: corresponde al repositorio en el cual se almacenaran
+los resultados obtenidos luego de verificar los archivos
+
+La clase posee la siguiente interfaz:
+```C++
+    class Checker: public CheckerThread {
+    private:
+        std::string result;
+        FileRepository& file_repo;
+        OutputRepository& output_repo;
+        void setResult(Dfs& dfs);
+        std::string createOutput(std::string& path);
+        
+    public:
+        Checker(FileRepository& file_repo, OutputRepository& output_repo);
+        ~Checker();
+        void verifyFile();
+    };
+``` 
 ### CheckerThread
 
 ### GraphGenerator

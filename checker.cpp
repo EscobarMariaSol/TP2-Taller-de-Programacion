@@ -31,8 +31,7 @@ Checker ::~Checker() {
 void Checker::verifyFile() {
     std::string output;
     std::string path;
-    while (!this->file_repo.isEmpty()) {
-        path = this->file_repo.getFile();
+    while (!(path = this->file_repo.getFile()).empty()) {
         Graph graph;
         GraphGenerator generator(path);
         Dfs dfs;

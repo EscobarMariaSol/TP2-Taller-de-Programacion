@@ -30,9 +30,6 @@ public:
     // Pos: si la cola no está vacía devuelve la ruta a un archivo,
     // sino devuelve una ruta vacía
     std::string getFile();
-    // Método para consultar si el FileRepository está vacío
-    // Pos: devuelve verdadero si la cola está vacía, sino devuelve false.
-    bool isEmpty();
     // Constructor por referencia
     FileRepository(const FileRepository&);
     // asignación por referencia

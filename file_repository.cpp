@@ -23,11 +23,6 @@ std::string FileRepository::getFile() {
     return aux;
 }
 
-bool FileRepository::isEmpty() {
-    std::lock_guard<std::mutex> lock(this->mutex);
-    return (this->files.empty());
-}
-
 FileRepository::FileRepository(const FileRepository& other) {
     this->files = std::ref(other.files);
 }
