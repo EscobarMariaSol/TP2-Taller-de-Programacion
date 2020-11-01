@@ -13,6 +13,14 @@ static bool isAValidNumber(const std::string& number) {
     return true;
 }
 
+// Función que se encarga de correr los checkers y luego unirlos nuevamente
+// al thread principal
+// Pre: recibe un vector con punteros a los checkers y la cantidad de checkers
+// Pos: los checkers han sido ejecutados
+static void runCheckers(std::vector<Checker*>& checkers, int threads_num) {
+    for (int i = 0; i < threads_num; i++) checkers[i]->start();
+    for (int i = 0; i < threads_num; i++) checkers[i]->join();
+}
 /**************** Métodos Privados de CheckerProgram *************************/
 
 void CheckerProgram::saveFiles(std::vector<std::string>& files) {
@@ -39,8 +47,7 @@ int CheckerProgram::start(const char *threads,
         checkers.reserve(threads_num);
         for (int i = 0; i < threads_num; i++) 
             checkers.push_back(new Checker(this->file_repo, this->output_repo));
-        for (int i = 0; i < threads_num; i++) checkers[i]->start();
-        for (int i = 0; i < threads_num; i++) checkers[i]->join();
+        runCheckers(checkers, threads_num);
         this->output_repo.showOutput();
         for (int i = 0; i < threads_num; i++) delete checkers[i];
     }
