@@ -23,7 +23,8 @@ std::string FileRepository::getFile() {
     return aux;
 }
 
-bool FileRepository::isEmpty() const {
+bool FileRepository::isEmpty() {
+    std::lock_guard<std::mutex> lock(this->mutex);
     return (this->files.empty());
 }
 

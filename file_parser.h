@@ -8,6 +8,7 @@
 #include <map>
 
 #include "line_map.h"
+#include <utility>
 
 // Clase encargada de abrir un archivo, leer sus lineas y parsear el 
 // texto de los archivos a información utilizable para que la clase 

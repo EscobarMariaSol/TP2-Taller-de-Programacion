@@ -47,7 +47,8 @@ static int instructionInsert(std::list<std::string>& my_list, LineMap& mapped) {
 // y el LineMap
 // Pos: devuelve 0 en caso de que el parametro se haya agregado, -1 si
 // se registra algpun error en el proceso
-static int paramInsert(std::list<std::string>& my_list, LineMap& mapped, int pos) {
+static int paramInsert(std::list<std::string>& my_list, 
+    LineMap& mapped, int pos) {
     if (my_list.front().back() == ',') my_list.front().pop_back();
     std::string param = "PARAM" + std::to_string(pos);
     if (mapped.add(param, std::move(my_list.front())) < 0) return -1;

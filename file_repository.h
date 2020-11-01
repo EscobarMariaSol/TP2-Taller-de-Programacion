@@ -32,7 +32,7 @@ public:
     std::string getFile();
     // Método para consultar si el FileRepository está vacío
     // Pos: devuelve verdadero si la cola está vacía, sino devuelve false.
-    bool isEmpty() const;
+    bool isEmpty();
     // Constructor por referencia
     FileRepository(const FileRepository&);
     // asignación por referencia

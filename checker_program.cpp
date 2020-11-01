@@ -30,7 +30,8 @@ CheckerProgram::CheckerProgram(): file_repo(), output_repo() {
 CheckerProgram::~CheckerProgram() {
 }
 
-int CheckerProgram::start(const char *threads, std::vector<std::string>& files) {
+int CheckerProgram::start(const char *threads, 
+    std::vector<std::string>& files) {
     if (isAValidNumber(std::string(threads))) {
         saveFiles(files);
         int threads_num = atoi(threads);

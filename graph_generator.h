@@ -14,7 +14,6 @@
 // convertir las lineas del archivo en información de fácil manipulación
 // para la creación del grafo.
 class GraphGenerator {
-
 private:
     FileParser parser;
     // Método que agrega lee el archivo y genera los nodos para 
