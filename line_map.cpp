@@ -10,14 +10,6 @@ bool LineMap::isATag(std::string tag) const {
     return true;
 }
 
-/**************** Métodos Públicos de LineMap *************************/
-LineMap::LineMap(): line_map(), status(0) {
-}
-
-LineMap::~LineMap() {
-}
-
-
 bool LineMap::isAJump() const {
     if (!this->line_map.empty())
         return (this->line_map.find("INST")->second.front() == 'j');
@@ -30,6 +22,13 @@ bool LineMap::isARet() const {
         return (instuction.compare("ret") == 0);
     }
     return false;
+}
+
+/**************** Métodos Públicos de LineMap *************************/
+LineMap::LineMap(): line_map(), status(0) {
+}
+
+LineMap::~LineMap() {
 }
 
 std::string LineMap::getTagId() {

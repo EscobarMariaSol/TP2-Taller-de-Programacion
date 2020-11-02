@@ -21,12 +21,6 @@ private:
     // Método que indica si una instrucción es una instrucción "ret"
     // Pos: devuelve true o false, de acuerdo a si la instrucció en un "ret"
     bool isARet() const;
-
-public:
-    // Constructor
-    LineMap();
-    // Destructor
-    ~LineMap();
     // Método que indica si un string corresponde a una etiqueta
     // Pre: recibe un string
     // Pos: devuelve true o false, de acuerdo a si es una etiqueta o no
@@ -34,6 +28,12 @@ public:
     // Método que indica si una instrucción es una instrucción de salto
     // Pos: devuelve true o false, de acuerdo a si la instrucción es de salto
     bool isAJump() const;
+
+public:
+    // Constructor
+    LineMap();
+    // Destructor
+    ~LineMap();
     // Método que devuelve el nombre de la etiqueta a la cual corresponde la
     // instrucción
     // Pos: devuelve el string correspondiente al nombre de la etiqueta, si

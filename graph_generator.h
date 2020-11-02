@@ -16,7 +16,8 @@
 class GraphGenerator {
 private:
     FileParser parser;
-    // Método que agrega lee el archivo y genera los nodos para 
+    // Método que llama al parser para que lea el archivo y le devuelva
+    // la información relevante para así generar los nodos para 
     // agregarlos al grafo
     // Pre: recibe una referencia al grafo y un seT donde se guardan 
     // las aristas del grafo

@@ -205,7 +205,7 @@ La clase posee la siguiente interfaz:
         int start(const char *threads_num, std::vector<std::string>& files);
     };
 ``` 
-Vemos que cuenta con alguno de los siguientes métodos:
+A continuación se detalla un poco acerca de los métodos que posee la clase:
 1. **saveFiles**: es un método que se ha marcado como privado, pues sólo es 
 utilizado por la misma clase, la cual lo utiliza para guardar las rutas, a los 
 archivos a verificar, dentro del repositorio de archivos.
@@ -236,7 +236,7 @@ La clase posee la siguiente interfaz:
         FileRepository& operator=(const FileRepository&); 
     };
 ```
-Se puede observar que cuenta con alguno de los siguientes métodos:
+A continuación se detalla un poco acerca de los métodos que posee la clase:
 1. **addFile**: este método se encarga de guardar una ruta a un archivo 
 dentro del atributo *files*, este es uno de los métodos protegidos por 
 un lock_guard del mutex.
@@ -270,7 +270,7 @@ La clase posee la siguiente interfaz:
         OutputRepository& operator=(const OutputRepository& other);
     };
 ```
-Como se puede observar cuenta con alguno de los siguientes métodos:
+A continuación se detalla un poco acerca de los métodos que posee la clase:
 1. **addOutput**: este método se encarga de guardar una nueva salida 
 al set de resultados *outputs* y es uno de los métodos protegidos por 
 un lock_guard del mutex.
@@ -309,14 +309,245 @@ La clase posee la siguiente interfaz:
         void verifyFile();
     };
 ``` 
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **setResult**: este es un método privado, al cual sólo accede el *Checker* 
+luego de que se haya obtenido el resultado de la verificación y el cual se 
+encarga de transformar el resultado del recorrido del *Dfs* a un string que 
+coincida con parte de la salida esperada.
+2. **createOutput**: este método, también privado, es encargado de crear el 
+formato del resultado que corresponde con la salida final del verificador.
+3. **verifyFile**: este es el método que se hereda de la clase *CheckerThread* 
+y al cual se llama desde cada instancia de la clase *Checker*, al momento de 
+lanzarse cada thread, el mismo encapsula toda la interacción de las clases 
+involucradas en la verificación del archivo, en sí, es decir, desde el 
+pedido de los archivos hasta la creación del grafo, su verificación y 
+finalmente de guardar el resultado.
+
 ### CheckerThread
+
+Esta en una clase abstracta la cual encapsula el comportamiento de crear un 
+thread para cada instancia de la clase *Checker* y ejecutar el correspondiente 
+verificador.
+La clase cuenta con un único atributo, llamado **thread** correspondiente al 
+thread que se lanzará cada vez que se llame al método *start*.
+
+La clase cuenta con la siguiente interfaz:
+```C++
+    class CheckerThread {
+    private:
+        std::thread thread;
+    
+    public:
+        CheckerThread();
+        virtual ~CheckerThread();
+        void start();
+        void join();
+        virtual void verifyFile() = 0;
+        CheckerThread(const CheckerThread& other) = delete;
+        CheckerThread& operator=(const CheckerThread& other) = delete;
+        CheckerThread(CheckerThread&& other);
+        CheckerThread& operator=(CheckerThread&& other);
+    };
+```
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **start**: este método se encarga de lanzar el thread, indicandole que 
+debe ejecutar el método *verifyFile* y pasandole un puntero a la instancia 
+misma.
+2. **join**: luego de que el método *start* haya finalizado su ejecución, se 
+utiliza este método para que el thread se vuelva a unir al thread principal.
+3. **verifyFile**: este es un método virtual puro, el cual carece de 
+implementación en esta clase, pero las clases que hereden de ella tienen la 
+obligación de implementar, como ya se ha mencionado anteriormente, la clase 
+*Checker* es la encargada de implementar este método.
 
 ### GraphGenerator
 
+Esta clase es la encargada de crear el grafo a partir del archivo que se debe 
+verificar, para hacer esto se vale de otras dos clases *FileParser* y *LineMap* 
+las cuales se detallaran más adelante.
+La clase cuenta con un único atributo llamado **parser**, correspondiente al 
+*LineParser* encargado de convertir las lineas del archivo en información de 
+fácil manipulación para la creación del grafo.
+
+La clase posee la siguiente interfaz:
+```C++
+    class GraphGenerator {
+    private:
+        FileParser parser;
+        int addNodes(Graph& new_graph, std::map<Node, std::set<std::string>>& edges);
+        int addEdges(Graph& new_graph, std::map<Node, std::set<std::string>>& edges);
+
+    public:
+        explicit GraphGenerator(const std::string path);
+        ~GraphGenerator();
+        int generateGraph(Graph& new_graph);
+    };
+```
+A continuación se detallan alguno de los métodos implementados por la clase:
+1. **addNodes**: método que llama al parser para obtener la información de 
+cada linea del archivo y generar los nodos para agregarlos al grafo.
+2. **addEdges**: método que agrega aristas al grafo, esto lo logra colocando 
+en cada nodo una referencia a sus correspondiente vecinos dentro del grafo.    
+3. **generateGraph**: este es el método que será visible para que la clase 
+*Checker* lo utilice y ejecute para generar el grafo a partir de la ruta de 
+un archivo.
+    
 ### FileParser
+
+Es la clase encargada de abrir un archivo, leer sus lineas y parsear el texto 
+del archivo para convertirlo en información utilizable para que así la clase 
+*GraphGenerator* pueda crear un grafo a partir de ello.
+La clase cuenta con un único atributo, llamado **file** correspondiente al 
+filestream que se desea parsear.
+
+La clase provee la siguiente interfaz:
+```C++
+    class FileParser {
+    private:
+        std::fstream file;
+        
+    public:
+        explicit FileParser(const std::string file_name);
+        ~FileParser();
+        LineMap parseLine();
+        bool hasLine() const;
+    };
+```
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **parseLine**: este es el método que lee una línea del archivo y la procesa, 
+almacenando toda la información relevante en el *LineMap* que será devuelto.
+2. **hasLine**: método que indica si todavía existen lineas del archivo a ser 
+procesadas.
 
 ### LineMap
 
+Esta es la clase encargada de almacenar de manera organizada la información 
+leída en las líneas de los archivos, correspondiente a las instrucciones del 
+programa bpf.
+La clase cuenta con los siguientes atributos:
+1. **line_map**: el cual es un map donde se almacenan las instrucciones, su tipo 
+y sus parámetros, si existen etiquetas estas también se almacenan con su 
+correspondiente nombre.
+2. **status**: indica si el *LineMap* es válido o ha sido corrompido por algún
+error durante su uso.
+
+Esta clase posee la siguiente interfaz:
+```C++
+class LineMap {
+private:
+    std::map<std::string, std::string> line_map;
+    int status;
+    bool isARet() const;
+    bool isATag(std::string tag) const;
+    bool isAJump() const;
+
+public:
+    LineMap();
+    ~LineMap();
+    std::string getTagId();
+    std::set<std::string> getNeighbors();
+    int add(std::string key, std::string value);
+    bool isEmpty() const;
+    bool canGoToTheNexLine() const;
+    void invalidate();
+    bool isValid() const;
+};
+```
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **isARet**: método que indica si una instrucción almacenada en el *LineMap* 
+es una instrucción "ret".   
+2. **isATag**: método que indica si un string corresponde a una etiqueta.   
+3. **isAJump**: método que indica si una instrucción almacenada en el *LineMap* 
+corresponde a una instrucción de salto o no.
+4. **getTagId**: método que, en caso de ser una etiqueta, devuelve el nombre de 
+la etiqueta a la cual corresponde la instrucción almacenada en el *LineMap*.
+5. **getNeighbors**: método que devuelve un set con los id correspondientes a 
+las instrucciones que pueden ser ejecutadas luego de la instrucción actual, es 
+decir, a los vecinos a los cuales puede saltarse desde la instrucción actual.
+6. **add**: método para agregar nueva información al *LineMap*, el formato 
+consiste en una key indicando el tipo de información y un value correspondiente 
+a la información misma.
+7. **isEmpty**: método que indica si el LineMap está vacío o no.
+8. **canGoToTheNextLine**: método que indica si la instrucción almacenada dentro 
+del *LineMap* puede dar como resultado un salto a la instrucción inmediatamente 
+consecutiva o no.
+9. **invalidate**: método que invalida el *LineMap* para que el mismo quede 
+inutilizable, esto puede hacerse luego de que suceda algún error en alguna de 
+sus operaciones.
+10. **isValid**: método que indica si el *LineMap* es válido o no
+    
 ### Graph
 
+Clase que representa el grafo en el cual se van almacendando los nodos 
+correspondientes a las instrucciones del programa bpf que se debe verificar. 
+La clase cuenta con único atributo, llamado **nodes**, que es una lista con 
+los nodos pertenecientes al grafo.
+
+Esta clase posee la siguiente interfaz:
+```C++
+    class Graph {
+    private:
+        std::list<Node> nodes;
+        
+    public:
+        Graph();
+        ~Graph();
+        size_t getSize() const;
+        std::list<Node> getNodes() const;
+        int addNode(Node& node);
+        Node& getNode(const std::string id);
+        bool containsNode(const std::string id);
+        Node& getFirst();
+    };
+```
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **getSize**: método que devuelve el tamaño del grafo, es decir, la cantidad
+de nodos que se encuentran dentro del mismo.
+2. **getNodes**: método que devuelve la lista con la referencia a los nodos que 
+han sido agregados al grafo.
+3. **addNode**: método que recibe una referencia a un nodo y la almacena en la 
+lista de nodos pertenecientes al grafo.
+4. **getNode**: método que localiza un nodo dentro del grafo a partir de la id 
+del mismo.
+5. **containsNode**: método que a partir de un id, indica si el nodo con esa id 
+pertenece o no al grafo.
+6. **getFirst**: método que devuelve el primer nodo de la lista de nodos que 
+pertenecen al grafo.
+        
 ### Dfs
+
+Clase encargada de realizar un recorrido DFS sobre un grafo permitiendo así 
+detectar la existencia de ciclos o la existencia de instrucciones que nunca 
+se ejecutaran.
+La clase cuenta con los siguientes atributos:
+1. **cycle**: atributo booleano para indicar si durante el recorrido de un 
+grafo se ha detectado un ciclo o no.
+2. **unusedInstructions**: atributo booleano para indicar si se han 
+encontrado instrucciones a las cuales no se puede acceder.
+
+La clase posee la siguiente interfaz:
+```C++
+class Dfs {
+private:
+    bool cycle;
+    bool unusedInstructions;
+    int visit(Graph& graph, Node& actual, std::set<Node>& visited);
+
+public:
+    Dfs();
+    ~Dfs();
+    int walkGraph(Graph& graph);
+    bool hasCycle() const;
+    bool hasUnusedInstructions() const;
+    };
+```
+A continuación se detalla un poco acerca de los métodos que posee la clase:
+1. **visit**: método que visita todos los nodos accesibles de un grafo, 
+partiendo desde un nodo que se le pasa por parametro comienza a moverse entre 
+los vecinos, como el clasico algoritmo dfs.
+2. **walkGraph**: método que que llama a la función visit y luego verifica si 
+el recorrido detectó ciclos o nodos que no sean accesibles.
+3. **hasCycle**: método que señala si un grafo que fue previamente recorrido 
+contiene un ciclo o no.
+4. **hasUnusedInstructions**: método que señala si un grafo que fue recorrido 
+previamente contiene nodos que no se han podido visitar o no.
