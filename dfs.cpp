@@ -49,7 +49,7 @@ int Dfs::visit(Graph& graph, Node& actual, std::set<Node>& visited) {
     return 0; 
 }
 
-/*********************** Métodos Públicos de Dfs**** *************************/
+/*********************** Métodos Públicos de Dfs******************************/
 
 Dfs::Dfs(): cycle(false), unusedInstructions(false) {
 }

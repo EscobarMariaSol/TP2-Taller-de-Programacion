@@ -1,6 +1,6 @@
 #include "checker_thread.h"
 
-/******************* Funciones Públicas de CheckerThread *********************/
+/******************* Métodos Públicos de CheckerThread *********************/
 
 CheckerThread::CheckerThread() {
 }
